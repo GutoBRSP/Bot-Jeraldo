@@ -1,6 +1,9 @@
 from bot_logic import *
 from discord.ext import commands
 import discord
+import os
+import random
+import requests
 
 # Permissões do bot
 intents = discord.Intents.default()
@@ -56,5 +59,37 @@ async def enviar_emoji(ctx):
     emoji = gen_emodji()
     await ctx.send(emoji)
 
+# Comando para enviar uma imagem
+@bot.command()
+async def meme(ctx):
+    with open('imagens/Programação.png', 'rb') as f:
+        #Vamos armazenar o arquivo convertido da biblioteca do Discord nesta variável!
+        picture = discord.File(f)
+    # Podemos então enviar esse arquivo como um parâmetro
+    await ctx.send(file=picture)
+
+#usando a biblioteca os e o comando lisdir
+@bot.command()
+async def mem(ctx):
+    img_name = random.choice(os.listdir('imagens'))
+    
+    with open(f'imagens/{img_name}', 'rb') as f:
+        picture = discord.File(f)
+    await ctx.send(file=picture)
+
+# Comando para enviar uma imagem aleatória de pato
+def get_duck_image_url():    
+    url = 'https://random-d.uk/api/random'
+    res = requests.get(url)
+    data = res.json()
+    return data['url']
+
+
+@bot.command('duck')
+async def duck(ctx):
+    '''Uma vez que chamamos o comando duck, o programa chama a função get_duck_image_url '''
+    image_url = get_duck_image_url()
+    await ctx.send(image_url)
+
 # Executar o bot (coloque seu token aqui)
-bot.run("TOKEN AQUI!")
+bot.run("")
